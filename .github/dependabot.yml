@@ -10,6 +10,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Keep declared lower bounds (torch>=2.2, ...) - they are tested by the
+    # min-deps CI job; only exact pins such as ruff==/mypy== get bumped.
+    versioning-strategy: increase-if-necessary
     commit-message:
       prefix: "build"
     open-pull-requests-limit: 5
