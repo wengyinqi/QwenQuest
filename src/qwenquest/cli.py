@@ -159,10 +159,16 @@ def cmd_demo(args: argparse.Namespace) -> int:
             )
         if mode == "quest_hisparse":
             st = eng.attn_backend.coord.stats  # type: ignore[attr-defined]
-            print(
-                f"HiSparse hot buffer: {st.hits} hits / {st.misses} misses "
-                f"(hit rate {st.hit_rate:.1%}) across all layers and steps\n"
-            )
+            if st.hits + st.misses == 0:
+                print(
+                    "HiSparse hot buffer: every step took the fast path (the sequence fits "
+                    f"in device_buffer_size={hc['device_buffer_size']})\n"
+                )
+            else:
+                print(
+                    f"HiSparse hot buffer: {st.hits} hits / {st.misses} misses "
+                    f"(hit rate {st.hit_rate:.1%}) across all layers and steps\n"
+                )
 
     q, h, d = (torch.stack(outputs[m].logits) for m in ("quest", "quest_hisparse", "dense"))
     print(

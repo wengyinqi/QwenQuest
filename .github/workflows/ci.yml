@@ -85,7 +85,7 @@ jobs:
         run: |
           qwenquest --version
           qwenquest info
-          qwenquest demo --prompt-len 120 --new-tokens 6
+          qwenquest demo --prompt-len 120 --new-tokens 6 --device-buffer-size 96
       - if: matrix.python-version == '3.12'
         uses: actions/upload-artifact@v7
         with:
