@@ -1,0 +1,32 @@
+QwenQuest
+Copyright 2026 QwenQuest contributors
+
+This product is a readable PyTorch re-implementation of the Quest sparse
+decoding path that HiSparse uses for Qwen3-30B-A3B.
+
+Portions of this product are derived from SGLang
+(https://github.com/sgl-project/sglang), Copyright 2023-2026 SGLang Team,
+licensed under the Apache License, Version 2.0.  The derived logic follows
+the `hisparse_quest` branch at commit
+e568f8a362b4ae3a597b28b75716309814aa33fb, in particular:
+
+  python/sglang/srt/mem_cache/sparsity/algorithms/quest_algorithm.py
+  python/sglang/srt/mem_cache/sparsity/factory.py
+  python/sglang/srt/managers/hisparse_coordinator.py
+  python/sglang/srt/layers/attention/flashinfer_quest_backend.py
+  python/sglang/srt/layers/attention/flashinfer_hisparse_backend.py
+  python/sglang/jit_kernel/csrc/hisparse.cuh
+
+The code was rewritten in plain PyTorch (no Triton / CUDA / FlashInfer),
+restructured, and documented; see docs/upstream_mapping.md for a
+function-by-function correspondence and the list of intentional changes.
+
+The Qwen3-MoE architecture follows the Hugging Face `transformers`
+implementation (https://github.com/huggingface/transformers,
+Apache License 2.0).
+
+References:
+  Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference,
+    Tang et al., ICML 2024, arXiv:2406.10774.
+  HiSparse: Scaling Sparse-Attention Decoding with Hierarchical KV Cache
+    Management, arXiv:2608.07009.

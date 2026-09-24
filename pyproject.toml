@@ -1,0 +1,99 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qwenquest"
+dynamic = ["version"]
+description = "Readable baseline of HiSparse's Qwen3-30B-A3B + Quest sparse decoding: Quest top-k page selection, optional hierarchical (host + hot buffer) KV cache."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "QwenQuest contributors" }]
+keywords = ["llm", "sparse-attention", "quest", "hisparse", "qwen3", "moe", "kv-cache"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.2",
+    "safetensors>=0.4",
+]
+
+[project.optional-dependencies]
+# Tokenizer / chat template for `qwenquest generate`.
+hf = ["transformers>=4.51,<6"]
+# The test suite checks numerical parity against transformers' Qwen3-MoE.
+test = ["pytest>=8", "pytest-cov>=5", "transformers>=4.51,<6"]
+dev = ["qwenquest[test]", "ruff==0.16.8", "mypy==2.3.1", "build>=1.2", "twine>=5", "pre-commit>=3.7"]
+
+[project.scripts]
+qwenquest = "qwenquest.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/wengyinqi/QwenQuest"
+Changelog = "https://github.com/wengyinqi/QwenQuest/blob/main/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = { attr = "qwenquest._version.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ----------------------------------------------------------------------------- ruff
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "examples"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "C4", "PT"]
+ignore = [
+    "E501",    # long lines are left to the formatter
+    "RUF001",  # the docs quote Chinese punctuation
+    "RUF002",
+    "RUF003",
+    "PT011",   # pytest.raises(ValueError) without match= is fine in tests
+    "PT018",   # composite asserts read better in these tests
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["qwenquest"]
+
+# ----------------------------------------------------------------------------- pytest
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "gpu: needs a CUDA device (skipped otherwise)",
+    "hf: needs `transformers` (skipped otherwise)",
+]
+filterwarnings = [
+    "ignore:Failed to initialize NumPy:UserWarning",
+]
+
+[tool.coverage.run]
+source = ["qwenquest"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "pragma: no cover"]
+
+# ----------------------------------------------------------------------------- mypy
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src/qwenquest"]
+check_untyped_defs = true
+no_implicit_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
