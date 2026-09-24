@@ -97,3 +97,11 @@ no_implicit_optional = true
 warn_unused_ignores = true
 warn_redundant_casts = true
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# numpy>=2.5 ships stubs written with Python 3.12 syntax (`type` statements),
+# which a python_version=3.10 check cannot parse.  qwenquest never uses numpy;
+# it is only reached through torch's annotations, so treat it as Any.
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
