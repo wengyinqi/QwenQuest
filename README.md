@@ -31,6 +31,9 @@ Quest 只替换 **decode** 时的 backend：
 
 `quest` 与 `quest_hisparse` 的输出**逐位相同**（有测试保证）：HiSparse 只改变 KV 放在哪里，不改变结果。
 
+> 定位：这是用来**读懂和验证**算法的参考实现（逐请求循环、无 Triton/CUDA graph），
+> 精度对齐上游，速度不对齐；测吞吐请用 SGLang 上游实现。
+
 ## 快速开始
 
 ```bash
